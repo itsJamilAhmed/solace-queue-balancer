@@ -1,0 +1,10 @@
+
+artifactId: solace-semp-java-client
+artifactVersion: 1.0.0
+groupId: com.itsjamilahmed.solace.semplib.config
+packageName: com.itsjamilahmed.solace.semplib.config
+modelPackage: com.itsjamilahmed.solace.semplib.config.model 
+apiPackage: com.itsjamilahmed.solace.semplib.config.api
+invokerPackage: com.itsjamilahmed.solace.semplib.config.lib
+
+
