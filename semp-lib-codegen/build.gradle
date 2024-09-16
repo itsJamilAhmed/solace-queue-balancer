@@ -1,0 +1,72 @@
+
+configurations {
+    tool
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+
+    tool "org.openapitools:openapi-generator-cli:7.8.0"
+
+}
+
+
+task buildSempLibs {
+
+	// Paths here are relative to project root!
+    def f0 = new File('semp-lib/docs')   // take the presence as evidence that the directory has been filled with codegen output
+    if (!f0.exists()) {
+        	
+		def f1 = new File('semp-lib-codegen/solace-sempv2-openapi-monitor.yaml')
+		if (!f1.exists()) {
+			new URL('https://products.solace.com/download/PUBSUB_SEMPV2_MONITOR_SCHEMA_YAML').withInputStream{ i -> f1.withOutputStream{ it << i }}
+		}
+		
+		def f2 = new File('semp-lib-codegen/solace-sempv2-openapi-action.yaml')
+		if (!f2.exists()) {
+			new URL('https://products.solace.com/download/PUBSUB_SEMPV2_ACTION_SCHEMA_YAML').withInputStream{ i -> f2.withOutputStream{ it << i }}
+		}
+		
+		// Paths here are within the semp-lib-codegen directory
+		javaexec {
+			mainClass="org.openapitools.codegen.OpenAPIGenerator";
+			classpath configurations.tool
+			workingDir = "."
+			args = [
+					"generate",
+					"-g",
+					"java",
+					"-i",
+					"./solace-sempv2-openapi-monitor.yaml",
+					"-c",
+					"./config-for-generator-semp-monitor.yaml",
+					"-o",
+					"../semp-lib"
+					]
+		}
+		
+		javaexec {
+			mainClass="org.openapitools.codegen.OpenAPIGenerator";
+			classpath configurations.tool
+			workingDir = "."
+			args = [
+					"generate",
+					"-g",
+					"java",
+					"-i",
+					"./solace-sempv2-openapi-action.yaml",
+					"-c",
+					"./config-for-generator-semp-action.yaml",
+					"-o",
+					"../semp-lib"
+					]
+		}
+	
+    }
+
+}
+
