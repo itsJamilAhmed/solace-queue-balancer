@@ -1,4 +1,5 @@
 plugins {
+    id 'groovy-gradle-plugin'
     id 'com.itsjamilahmed.solace.queuebalancer.java-application-conventions'
 	id 'com.gradleup.shadow' version "8.3.1"	// Use to create runnable 'fat jar' with dependencies included
 }
