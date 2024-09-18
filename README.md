@@ -61,11 +61,11 @@ Use the included Gradle Wrapper script to build the project. This will perform t
 3. Create an executable Jar of the program
 
 ```
+./gradle :semp-lib-codegen:buildSempLibs
 ./gradlew build
 ./gradlew shadowJar
 cp ./app/build/libs/QueueBalancerApp.jar .
 ```
-_Note: If the build task fails due to a `Could not resolve project :semp-lib` message, running the command again finds it._
 
 ### Step :three:: Run executable jar
 
