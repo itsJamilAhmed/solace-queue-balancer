@@ -4,6 +4,9 @@ plugins {
 	id 'com.gradleup.shadow' version "8.3.1"	// Use to create runnable 'fat jar' with dependencies included
 }
 
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
 repositories {
     mavenCentral()
     flatDir {
