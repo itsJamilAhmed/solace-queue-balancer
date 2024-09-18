@@ -154,7 +154,7 @@ To modify the `QueueBalancerApp` and `QueueBalancer` classes in Eclipse, do the 
 
 1. At `solace-queue-balancer` root directory:
 ```
-gradlew eclipse
+./gradlew eclipse
 ```
 
 2. From Eclipse `File > Import > Import Existing Projects into Workspace` and provide the path to the top level `solace-queue-balancer` directory.
