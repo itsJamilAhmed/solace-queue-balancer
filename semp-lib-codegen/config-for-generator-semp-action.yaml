@@ -1,5 +1,5 @@
 
-artifactId: solace-semp-java-client
+artifactId: semp-lib
 artifactVersion: 1.0.0
 groupId: com.itsjamilahmed.solace.semplib.action
 packageName: com.itsjamilahmed.solace.semplib.action
