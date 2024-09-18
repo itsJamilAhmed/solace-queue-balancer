@@ -30,7 +30,12 @@ public class QueueBalancerApp {
 		// As an example, running every 10 minutes and needing 2 consecutive 'true' status may be when a rebalance is done.
 		// This would allow for transient periods of imbalance to not trigger the move of messages, only persistently imbalanced periods.
 		
-		myQueueBalancer.determineBalancedStatus();
+		try {
+			myQueueBalancer.determineBalancedStatus();
+		} catch (Exception e) {
+			logger.fatal(e.getMessage());
+			System.exit(-1);
+		}
 		
 		logger.info("Do the queues need rebalancing? " + myQueueBalancer.isQueueRebalanceRequired());
 		

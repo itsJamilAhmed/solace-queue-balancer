@@ -214,9 +214,10 @@ public class QueueBalancer {
 	/**
 	 * Trigger a check of each queue's depth and update state of whether rebalancing required
 	 * This action will use the SEMP APIs to do this for each queue, expected to take some time
+	 * @throws Exception if there is an unrecoverable error from SEMP API calls.
 	 * 
 	 */
-	public boolean determineBalancedStatus () {
+	public boolean determineBalancedStatus () throws Exception {
 
 		// (1) Iterate each queue name and get the current depth and bind count of the queue
 		//     In a rebalancing operation, no value to moving messages *to* queues that are not being serviced
@@ -249,7 +250,10 @@ public class QueueBalancer {
 				logger.info("\tStatus for queue: " + queue.getQueueName() + "... Current Depth: " + queue.getQueueDepth() + ". Clients Bound? " + queue.isClientsBound());
 
 			} catch (ApiException e) {
-				handleSempError_queueOperation(queue, e);
+				// Recoverable error?
+				if (!handleSempError_queueOperation(queue, e)) {
+					throw new Exception("Unrecoverable error.");
+				}
 			}            
 		}
 
@@ -492,20 +496,29 @@ public class QueueBalancer {
 		return null;    	
 	}
 
-	private void handleSempError_queueOperation(MonitoredQueue queue, ApiException ae) {
+	private boolean handleSempError_queueOperation(MonitoredQueue queue, ApiException ae) {
 		Gson gson = new Gson();
 		String responseString = ae.getResponseBody();
 		SempMetaOnlyResponse respObj = gson.fromJson(responseString, SempMetaOnlyResponse.class);
 		SempError errorInfo = respObj.getMeta().getError();
 
+		boolean recoverable = false;
+		
 		// What went wrong with the SEMP query?
 		switch (errorInfo.getStatus()) {
 		case "NOT_FOUND":
 			logger.warn("Queue: " + queue.getQueueName() + " not configured on the broker! Will be ignored...");
+			recoverable = true;
 			break;
+		case "UNAUTHORIZED":
+			logger.fatal("Authorization Failed using provided SEMP Credentials!");
+			recoverable = false;
+			break;			
 		default:
 			logger.error("SEMP error during processing queue " + queue.getQueueName() +": " + errorInfo.getDescription() + "(" + errorInfo.getStatus() + ")");
+			recoverable = true;
 		}       
+		return recoverable;
 	}
 
 	private void handleSempError_rmidOperation(ApiException ae) {
