@@ -1,5 +1,16 @@
 # Solace Queue Balancer
 
+## Table of Contents :bookmark_tabs:  
+* [Repository Purpose](#repository-purpose)
+* [Implementation Principles](#implementation-principles)
+* [Running the tool](#running-the-tool)
+* [Example Program Output](#example-program-output)
+* [Importing into Eclipse IDE](#importing-into-eclipse-ide)
+* [Contributing](#contributing)
+* [Authors](#authors)
+* [License](#license)
+* [Resources](#resources)
+
 ## Repository Purpose
 
 When using Solace PubSub+ Event Brokers, the backlog of events/messages in a queue can be processed in a [competing consumers pattern](https://solace.com/event-driven-architecture-patterns/#competing-consumers). This is where multiple consumers can join the same queue to balance the processing load across all available consumers.
@@ -49,19 +60,12 @@ Use the included Gradle Wrapper script to build the project. This will perform t
 2. Compile all the Java classes
 3. Create an executable Jar of the program
 
-Linux:
 ```
 ./gradlew build
 ./gradlew shadowJar
 cp ./app/build/libs/QueueBalancerApp.jar .
 ```
-
-Windows PowerShell:
-```
-.\gradlew.bat build
-.\gradlew.bat shadowJar
-cp .\app\build\libs\QueueBalancerApp.jar .
-```
+_Note: If the build task fails due to a `Could not resolve project :semp-lib` message, running the command again finds it._
 
 ### Step :three:: Run executable jar
 
@@ -72,14 +76,8 @@ The program needs the following arguments:
 * `--semp-password` - The password of the admin user
 * `--queues-list` - Comma delimited list of queues to monitor and rebalance. e.g. myQueue1,myQueue2,myQueue3
 
-Linux:
 ```
 java -jar ./QueueBalancerApp.jar --semp-base https://mysolace:943/SEMP/v2/config --message-vpn jamil_dev --semp-user admin --semp-password <here> --queues-list balancerTool_Q1,balancerTool_Q2,balancerTool_Q3,balancerTool_Q4,balancerTool_Q5,balancerTool_Q6
-```
-
-Windows PowerShell:
-```
-java -jar .\QueueBalancerApp.jar --semp-base https://mysolace:943/SEMP/v2/config --message-vpn jamil_dev --semp-user admin --semp-password <here> --queues-list balancerTool_Q1,balancerTool_Q2,balancerTool_Q3,balancerTool_Q4,balancerTool_Q5,balancerTool_Q6
 ```
 
 ## Example Program Output 
@@ -149,6 +147,20 @@ java -jar .\QueueBalancerApp.jar --semp-base https://mysolace:943/SEMP/v2/config
 11:49:29.886 [main] INFO :      Moved message 15 with ID: rmid1:2542a-737bb6c39e6-00000000-00002812 from balancerTool_Q6 to balancerTool_Q5
 11:49:29.887 [main] INFO : >>> Rebalance operation completed successfully after 100% of planned moves.
 ```
+
+## Importing into Eclipse IDE
+
+To modify the `QueueBalancerApp` and `QueueBalancer` classes in Eclipse, do the following:
+
+1. At `solace-queue-balancer` root directory:
+```
+gradlew eclipse
+```
+
+2. From Eclipse `File > Import > Import Existing Projects into Workspace` and provide the path to the top level `solace-queue-balancer` directory.
+3. Select to import both the `app` and `semp-libs` projects that will be listed
+
+The `QueueBalancerApp` class containing Main can then be _'Run as'_ a Java Application. All dependencies would be handled in the project's classpath. 
 
 ## Contributing
 
